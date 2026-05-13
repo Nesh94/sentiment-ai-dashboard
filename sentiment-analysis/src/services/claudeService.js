@@ -6,7 +6,7 @@
 const ClaudeService = (() => {
   const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
   const MODEL = 'llama-3.3-70b-versatile';
-const apiKey = "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";
+const API_KEY= "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";
   function buildPrompt(text) {
     return `You are a professional sentiment analysis engine. Analyze the following text and return ONLY a valid JSON object with no markdown fences, no preamble, and no extra text.
 
