@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentimentAI — Data Insights Dashboard</title>
+  <link rel="stylesheet" href="src/styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">◈</span>
+          <span class="logo-text">SentimentAI</span>
+        </div>
+        <nav class="nav">
+          <a href="#" class="nav-link active">Dashboard</a>
+          <a href="#" class="nav-link">History</a>
+          <a href="#" class="nav-link">Reports</a>
+        </nav>
+        <div class="header-badge">AI Powered</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-text">
+          <h1>Sentiment <em>Analysis</em><br/>& Insights</h1>
+          <p>Interpret text data using AI. Paste text, upload CSV, or type anything — get instant emotional intelligence and insights.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-pill" id="totalAnalyzed"><span class="stat-num">0</span><span class="stat-label">Analyzed</span></div>
+          <div class="stat-pill positive"><span class="stat-num" id="positiveCount">0</span><span class="stat-label">Positive</span></div>
+          <div class="stat-pill negative"><span class="stat-num" id="negativeCount">0</span><span class="stat-label">Negative</span></div>
+        </div>
+      </section>
+
+      <!-- Input Section -->
+      <section class="input-section">
+        <div class="input-card">
+          <div class="input-tabs">
+            <button class="tab active" data-tab="text">✦ Text Input</button>
+            <button class="tab" data-tab="bulk">⊞ Bulk CSV</button>
+            <button class="tab" data-tab="sample">◎ Try Samples</button>
+          </div>
+
+          <!-- Text Tab -->
+          <div class="tab-content active" id="tab-text">
+            <div class="textarea-wrap">
+              <textarea id="textInput" placeholder="Paste or type any text here — reviews, comments, feedback, tweets…" rows="6"></textarea>
+              <div class="char-count"><span id="charCount">0</span> characters</div>
+            </div>
+            <div class="input-actions">
+              <select id="languageSelect" class="select-input">
+                <option value="auto">🌐 Auto-detect language</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+              </select>
+              <button class="btn btn-primary" id="analyzeBtn">
+                <span class="btn-icon">◈</span> Analyze Sentiment
+              </button>
+            </div>
+          </div>
+
+          <!-- Bulk Tab -->
+          <div class="tab-content" id="tab-bulk">
+            <div class="upload-zone" id="uploadZone">
+              <div class="upload-icon">⊞</div>
+              <p>Drop a CSV file here, or <label for="fileInput" class="file-label">browse</label></p>
+              <input type="file" id="fileInput" accept=".csv,.txt" hidden />
+              <span class="upload-hint">CSV with a "text" column, or plain .txt (one entry per line)</span>
+            </div>
+            <div class="bulk-preview hidden" id="bulkPreview">
+              <div class="bulk-info" id="bulkInfo"></div>
+              <button class="btn btn-primary" id="analyzeBulkBtn">⊞ Analyze All</button>
+            </div>
+          </div>
+
+          <!-- Samples Tab -->
+          <div class="tab-content" id="tab-sample">
+            <div class="samples-grid">
+              <button class="sample-card" data-text="The product quality is absolutely outstanding! I'm thrilled with my purchase and the customer service was incredibly helpful. Will definitely buy again!">
+                <span class="sample-emoji">😄</span>
+                <span class="sample-label">Positive Review</span>
+              </button>
+              <button class="sample-card" data-text="Terrible experience. The item arrived damaged and customer support was completely unresponsive. I want a full refund immediately.">
+                <span class="sample-emoji">😠</span>
+                <span class="sample-label">Negative Review</span>
+              </button>
+              <button class="sample-card" data-text="The package arrived on time. The product looks exactly like the photos. Nothing particularly special but it does the job.">
+                <span class="sample-emoji">😐</span>
+                <span class="sample-label">Neutral Review</span>
+              </button>
+              <button class="sample-card" data-text="I have mixed feelings. The design is gorgeous and the build quality is excellent, but the battery life is disappointingly short and the price feels too high.">
+                <span class="sample-emoji">🤔</span>
+                <span class="sample-label">Mixed Sentiment</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading -->
+      <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-card">
+          <div class="loading-spinner">◈</div>
+          <p id="loadingText">Analyzing sentiment…</p>
+          <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <section class="results-section hidden" id="resultsSection">
+        <div class="results-header">
+          <h2>Analysis Results</h2>
+          <div class="results-actions">
+            <button class="btn btn-ghost" id="exportBtn">↓ Export JSON</button>
+            <button class="btn btn-ghost" id="clearBtn">✕ Clear</button>
+          </div>
+        </div>
+
+        <!-- Single Result -->
+        <div id="singleResult" class="hidden">
+          <div class="result-hero">
+            <div class="sentiment-meter">
+              <div class="meter-label">Sentiment Score</div>
+              <div class="meter-track">
+                <div class="meter-fill" id="meterFill"></div>
+                <div class="meter-thumb" id="meterThumb"></div>
+              </div>
+              <div class="meter-labels"><span>Very Negative</span><span>Neutral</span><span>Very Positive</span></div>
+            </div>
+            <div class="result-badge-wrap">
+              <div class="result-badge" id="resultBadge"></div>
+              <div class="result-score" id="resultScore"></div>
+              <div class="result-confidence" id="resultConfidence"></div>
+            </div>
+          </div>
+
+          <div class="insights-grid">
+            <div class="insight-card" id="emotionsCard">
+              <h3>Detected Emotions</h3>
+              <div class="emotions-list" id="emotionsList"></div>
+            </div>
+            <div class="insight-card" id="keywordsCard">
+              <h3>Key Phrases</h3>
+              <div class="keywords-list" id="keywordsList"></div>
+            </div>
+            <div class="insight-card full-width" id="summaryCard">
+              <h3>AI Insight Summary</h3>
+              <p id="summaryText"></p>
+            </div>
+            <div class="insight-card" id="toneCard">
+              <h3>Tone Breakdown</h3>
+              <div class="tone-bars" id="toneBars"></div>
+            </div>
+            <div class="insight-card" id="recommendCard">
+              <h3>Recommendations</h3>
+              <ul class="recommend-list" id="recommendList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bulk Results -->
+        <div id="bulkResult" class="hidden">
+          <div class="bulk-stats-row" id="bulkStatsRow"></div>
+          <div class="chart-wrap">
+            <canvas id="bulkChart" width="700" height="280"></canvas>
+          </div>
+          <div class="bulk-table-wrap">
+            <table class="bulk-table" id="bulkTable">
+              <thead><tr><th>#</th><th>Text</th><th>Sentiment</th><th>Score</th><th>Confidence</th></tr></thead>
+              <tbody id="bulkTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section class="history-section" id="historySection">
+        <h2>Recent Analyses</h2>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">No analyses yet. Start by entering some text above.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>SentimentAI — Individual Project · AI for Data Analysis & Insights</span>
+      <span>Powered by Claude AI</span>
+    </footer>
+  </div>
+
+  <script src="src/utils/helpers.js"></script>
+  <script src="src/utils/chartHelper.js"></script>
+  <script src="src/services/claudeService.js"></script>
+  <script src="src/services/storageService.js"></script>
+  <script src="src/components/tabs.js"></script>
+  <script src="src/components/fileUpload.js"></script>
+  <script src="src/components/resultsRenderer.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
