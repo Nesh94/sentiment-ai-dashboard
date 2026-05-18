@@ -16,9 +16,11 @@
           <span class="logo-text">SentimentAI</span>
         </div>
         <nav class="nav">
-          <a href="#" class="nav-link active">Dashboard</a>
-          <a href="#" class="nav-link">History</a>
-          <a href="#" class="nav-link">Reports</a>
+          <nav class="nav">
+  <a href="#dashboard" class="nav-link active">Dashboard</a>
+  <a href="#historySection" class="nav-link">History</a>
+  <a href="#reportsSection" class="nav-link">Reports</a>
+</nav>
         </nav>
         <div class="header-badge">AI Powered</div>
       </div>
@@ -26,7 +28,7 @@
 
     <main class="main">
       <!-- Hero -->
-      <section class="hero">
+      <section class="hero" id="dashboard">
         <div class="hero-text">
           <h1>Sentiment <em>Analysis</em><br/>& Insights</h1>
           <p>Interpret text data using AI. Paste text, upload CSV, or type anything — get instant emotional intelligence and insights.</p>
@@ -115,7 +117,7 @@
       </div>
 
       <!-- Results Section -->
-      <section class="results-section hidden" id="resultsSection">
+      <section class="results-section hidden" id="reportsSection">
         <div class="results-header">
           <h2>Analysis Results</h2>
           <div class="results-actions">
