@@ -1,5 +1,5 @@
 const ClaudeService = (() => {
-  const API_KEY = process.env.GROQ_API_KEY;
+  const API_URL = "/api/analyze";
 
   async function analyzeText(text) {
     if (!text || text.trim().length === 0) {
